@@ -1,0 +1,373 @@
+import React, { useMemo, useRef, useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, Sparkles, Star, Lock, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+
+/**
+ * Relastro — Vedic Match App (Dark, Starry)
+ * 单文件 React 组件，暗色星空背景，支持两人信息输入 → 免费生成“一段”简短描述；
+ * 付费后解锁完整报告（价格：€49）。
+ *
+ * 说明：
+ * - 该文件为前端原型，真实占星计算（星历、时区、宫位等）与支付（Stripe/PayPal）需在后端或 API 中实现。
+ * - 这里实现了：
+ *   1) 星空背景 Canvas
+ *   2) 表单（两人：姓名、生日、时间可选、地点可选、性别）
+ *   3) 免费“简短结果”生成（占位/示例，带置信度提示与降级策略）
+ *   4) 支付入口（€49）占位：可替换成你的 Stripe Checkout 链接
+ *   5) UX/文案/免责声明
+ */
+
+export default function RelastroApp() {
+  return (
+    <div className="min-h-screen relative bg-black text-zinc-100 overflow-hidden">
+      <Starfield />
+      <div className="relative z-10">
+        <Header />
+        <main className="mx-auto max-w-6xl px-4 pb-24">
+          <Hero />
+          <MatchSection />
+          <FAQ />
+          <Footer />
+        </main>
+      </div>
+      <GradientOrbs />
+    </div>
+  );
+}
+
+/** 星空背景（轻量粒子） */
+function Starfield() {
+  const canvasRef = useRef(null as HTMLCanvasElement | null);
+  const [dpr, setDpr] = useState(1);
+
+  useEffect(() => {
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      setDpr(ratio);
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const stars = Array.from({ length: 250 }).map(() => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      s: Math.random() * 0.6 + 0.2,
+    }));
+
+    let raf = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // 背景渐变
+      const g = ctx.createRadialGradient(
+        canvas.width * 0.5,
+        canvas.height * 0.4,
+        0,
+        canvas.width * 0.5,
+        canvas.height * 0.6,
+        Math.max(canvas.width, canvas.height) * 0.9
+      );
+      g.addColorStop(0, "#070711");
+      g.addColorStop(1, "#000000");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 星星
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      for (const st of stars) {
+        st.y += st.s * 0.1; // 缓慢下落
+        if (st.y > canvas.height) st.y = 0;
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, st.r * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.fill();
+      }
+      ctx.restore();
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, [dpr]);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 z-0" aria-hidden />;
+}
+
+function GradientOrbs() {
+  return (
+    <>
+      <div className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" />
+      <div className="pointer-events-none fixed -bottom-20 -left-20 h-72 w-72 rounded-full bg-fuchsia-600/20 blur-3xl" />
+    </>
+  );
+}
+
+function Header() {
+  return (
+    <header className="sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-black/40 bg-black/60 border-b border-white/5">
+      <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Star className="h-5 w-5" />
+          <span className="text-lg font-semibold tracking-wide">Relastro</span>
+          <Badge className="ml-2 bg-white/10 text-white border-white/20">Vedic Match</Badge>
+        </div>
+        <div className="flex items-center gap-3">
+          <a href="#pricing" className="text-sm text-zinc-300 hover:text-white">价格</a>
+          <a href="#faq" className="text-sm text-zinc-300 hover:text-white">FAQ</a>
+          <Button className="bg-white/90 text-black hover:bg-white" size="sm">
+            <Sparkles className="mr-2 h-4 w-4" /> 试用一下
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="py-14 text-center">
+      <motion.h1
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-4xl md:text-6xl font-bold tracking-tight"
+      >
+        两个人的宇宙，
+        <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text text-transparent"> 用印度占星读懂</span>
+      </motion.h1>
+      <p className="mt-4 text-zinc-300 max-w-2xl mx-auto">
+        Relastro 采用 Vedic 占星方法（Ashtakoota / Nakshatra / Manglik 等），输入出生信息，自动生成一段免费简介；
+        想看完整报告？解锁即可获得详尽解读、建议与图表。
+      </p>
+    </section>
+  );
+}
+
+function MatchSection() {
+  const [p1, setP1] = useState<Profile>({ name: "", date: "", time: "", place: "", gender: "unspecified" });
+  const [p2, setP2] = useState<Profile>({ name: "", date: "", time: "", place: "", gender: "unspecified" });
+  const [busy, setBusy] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<"high" | "medium" | "low" | null>(null);
+  const [showPay, setShowPay] = useState(false);
+
+  const disabled = useMemo(() => !p1.name || !p2.name || !p1.date || !p2.date, [p1, p2]);
+
+  const onGenerate = async () => {
+    setBusy(true);
+    // 模拟计算：根据输入完整度与日期差生成一个确定性“倾向”与置信度。
+    const completeness = [p1.time && p1.place, p2.time && p2.place].filter(Boolean).length;
+    const conf = completeness === 2 ? "high" : completeness === 1 ? "medium" : "low";
+    setConfidence(conf);
+
+    const score = deterministicCompat(p1.date, p2.date, p1.name, p2.name);
+    const tone = score > 75 ? "契合度很强" : score > 55 ? "有不错的潜力" : score > 40 ? "需要经营与沟通" : "差异较大但可互补";
+
+    const caution = conf === "high"
+      ? "（基于完整的时间与地点，判断较为可靠）"
+      : conf === "medium"
+      ? "（部分缺少时间/地点，宫位与上升相关判断偏近似）"
+      : "（缺少时间/地点，结果为简化版，仅供参考）";
+
+    const s = `从 Vedic 视角看，${p1.name} 与 ${p2.name} 的基础匹配为 ${score} / 100，整体倾向为“${tone}”。${caution}`;
+    // 限制为“一小段”：
+    setSummary(s);
+    setBusy(false);
+  };
+
+  return (
+    <section className="grid md:grid-cols-2 gap-6 items-start">
+      <Card className="bg-white/5 border-white/10 shadow-xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5"/>输入双方信息</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="p1" className="w-full">
+            <TabsList className="grid grid-cols-2 bg-white/10">
+              <TabsTrigger value="p1">A 方</TabsTrigger>
+              <TabsTrigger value="p2">B 方</TabsTrigger>
+            </TabsList>
+            <TabsContent value="p1"><ProfileForm value={p1} onChange={setP1} /></TabsContent>
+            <TabsContent value="p2"><ProfileForm value={p2} onChange={setP2} /></TabsContent>
+          </Tabs>
+
+          <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <Button onClick={onGenerate} disabled={disabled || busy} className="flex-1">
+              {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Sparkles className="mr-2 h-4 w-4"/>}
+              生成免费简介
+            </Button>
+            <a href="#pricing" className="text-sm text-zinc-300 hover:text-white underline underline-offset-4">了解完整版</a>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-white/5 border-white/10 shadow-xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Lock className="h-5 w-5"/> 结果</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!summary ? (
+            <p className="text-zinc-300">提交后将在此显示一段简短介绍。完整版报告包含 Ashtakoota（36 分）、Nakshatra、Manglik 判定、优势/挑战与建议。</p>
+          ) : (
+            <div className="space-y-3">
+              <p className="leading-7">{summary}</p>
+              {confidence && (
+                <Badge variant="secondary" className="bg-white/10 border-white/20 text-white">
+                  置信度：{confidence === "high" ? "高" : confidence === "medium" ? "中" : "低"}
+                </Badge>
+              )}
+              <div className="pt-2 border-t border-white/10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-zinc-300">想查看完整 Vedic 兼容性报告与图表？</p>
+                    <p className="font-medium">解锁价格：€49</p>
+                  </div>
+                  <Button id="pricing" onClick={() => setShowPay(true)} className="group">
+                    立即解锁 <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-0.5 transition"/>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <PayDialog open={showPay} onOpenChange={setShowPay} />
+    </section>
+  );
+}
+
+function ProfileForm({ value, onChange }: { value: Profile; onChange: (v: Profile) => void }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+      <div className="space-y-2">
+        <Label>姓名 *</Label>
+        <Input placeholder="例如：Li" value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} />
+      </div>
+      <div className="space-y-2">
+        <Label>生日（YYYY-MM-DD） *</Label>
+        <Input type="date" value={value.date} onChange={e => onChange({ ...value, date: e.target.value })} />
+      </div>
+      <div className="space-y-2">
+        <Label>出生时间（可选）</Label>
+        <Input type="time" value={value.time} onChange={e => onChange({ ...value, time: e.target.value })} />
+      </div>
+      <div className="space-y-2">
+        <Label>出生地点（可选）</Label>
+        <Input placeholder="城市/国家" value={value.place} onChange={e => onChange({ ...value, place: e.target.value })} />
+      </div>
+      <div className="space-y-2 md:col-span-2">
+        <Label>性别</Label>
+        <Select value={value.gender} onValueChange={(v) => onChange({ ...value, gender: v as Gender })}>
+          <SelectTrigger>
+            <SelectValue placeholder="选择" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="unspecified">不透露</SelectItem>
+            <SelectItem value="female">女</SelectItem>
+            <SelectItem value="male">男</SelectItem>
+            <SelectItem value="other">其他</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <p className="text-xs text-zinc-400 md:col-span-2">
+        注：时间/地点为空时，系统采用“简化/降级分析”，并标注置信度；真正的 Vedic 宫位/上升需要完整信息。
+      </p>
+    </div>
+  );
+}
+
+function PayDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-zinc-950 text-zinc-100 border-white/10">
+        <DialogHeader>
+          <DialogTitle>解锁完整报告 — €49</DialogTitle>
+          <DialogDescription className="text-zinc-300">
+            完整版包括：Ashtakoota（36 分）细分、Nakshatra 适配、Manglik 判定、关键合相/相位、优势/挑战、沟通建议、时间窗口与图表（北/南印度盘）。
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 text-sm text-zinc-300">
+          <p>点击“去支付”跳转到安全的结算页面。支付成功后自动返回并解锁报告。</p>
+          <p className="text-zinc-400">（开发说明：将按钮链接替换为你的 Stripe Checkout URL，或打开自定义支付窗。）</p>
+        </div>
+        <DialogFooter className="gap-2">
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>稍后再说</Button>
+          {/* TODO: 替换为你自己的支付链接 */}
+          <Button asChild>
+            <a href="https://checkout.stripe.com/pay/YOUR_CHECKOUT_SESSION_ID" target="_blank" rel="noreferrer">去支付</a>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function FAQ() {
+  return (
+    <section id="faq" className="mt-16 grid md:grid-cols-2 gap-6">
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader><CardTitle>没有时间/地点可以用吗？</CardTitle></CardHeader>
+        <CardContent className="text-zinc-300">
+          可以，系统会输出“简短简介 + 置信度”，并采用 Vedic 的降级策略（如仅以月亮宿/Nakshatra 与 Ashtakoota 的可得部分评估）。完整报告建议补全时间与地点以提高准确度。
+        </CardContent>
+      </Card>
+      <Card className="bg-white/5 border-white/10">
+        <CardHeader><CardTitle>Relastro 适合做什么？</CardTitle></CardHeader>
+        <CardContent className="text-zinc-300">
+          适合快速了解两人的相处倾向、潜在优势与注意点。完整版提供更深入的结构化建议与时间窗口，适合作为长期关系参考（仅供娱乐/参考，不构成事实断言）。
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mt-16 text-center text-sm text-zinc-400">
+      <p>© {new Date().getFullYear()} Relastro. All rights reserved.</p>
+      <p className="mt-2">本服务基于印度占星学传统方法，结果仅供参考与娱乐用途。</p>
+    </footer>
+  );
+}
+
+// ——— 工具 & 类型 ———
+
+type Gender = "unspecified" | "female" | "male" | "other";
+
+type Profile = {
+  name: string;
+  date: string; // YYYY-MM-DD
+  time?: string; // HH:MM
+  place?: string;
+  gender: Gender;
+};
+
+function deterministicCompat(d1: string, d2: string, n1: string, n2: string) {
+  // 纯前端占位：基于日期差异 + 姓名哈希生成 35~92 的稳定分数
+  const seed = `${d1}|${d2}|${n1}|${n2}`;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 131 + seed.charCodeAt(i)) >>> 0;
+  const dayGap = Math.abs(new Date(d1).getTime() - new Date(d2).getTime()) / 86400000;
+  const base = 70 - (dayGap % 37); // 简单波动
+  const adj = (h % 35) / 10; // 0.0~3.4
+  const score = Math.max(35, Math.min(92, Math.round(base + adj)));
+  return score;
+}
