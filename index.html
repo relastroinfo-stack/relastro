@@ -23,7 +23,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 0;
+      z-index: -1; /* 放在最底层，不挡前景 */
       overflow: hidden;
     }
     .star {
@@ -41,7 +41,7 @@
 
     header {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       padding: 30px 15px 10px;
     }
     header h1 {
@@ -59,6 +59,7 @@
       position: absolute;
       top: 20px;
       right: 20px;
+      z-index: 3;
     }
     .lang button {
       background: none;
@@ -82,7 +83,7 @@
       flex-wrap: wrap;
       justify-content: center;
       margin-top: 20px;
-      z-index: 1;
+      z-index: 2;
       position: relative;
     }
     .person {
@@ -108,16 +109,20 @@
       gap: 20px;
       flex-wrap: wrap;
       justify-content: center;
+      z-index: 2;
+      position: relative;
     }
     button.service-btn {
       padding: 12px 20px;
       font-size: 1rem;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
+      cursor: pointer; /* 小手效果 */
       background: linear-gradient(45deg, #ff8c00, #ff0080);
       color: #fff;
       transition: 0.3s;
+      z-index: 2;
+      position: relative;
     }
     button.service-btn:hover {
       opacity: 0.9;
@@ -130,7 +135,7 @@
       border-radius: 8px;
       display: none;
       max-width: 500px;
-      z-index: 1;
+      z-index: 2;
       position: relative;
     }
     footer {
@@ -139,7 +144,7 @@
       max-width: 600px;
       opacity: 0.7;
       line-height: 1.6;
-      z-index: 1;
+      z-index: 2;
       position: relative;
     }
   </style>
@@ -217,11 +222,9 @@
   </footer>
 
   <script>
-    // 支付链接（替换成你自己的真实链接）
     const payQuick = "https://your-payment-link-for-quick.com";
     const payDeep = "https://your-payment-link-for-deep.com";
 
-    // 多语言文案
     const translations = {
       zh: {
         title: "Relastro ✦ 星座匹配与关系问题解答",
@@ -278,7 +281,6 @@
       btn.addEventListener("click", ()=>setLanguage(btn.dataset.lang));
     });
 
-    // 快速匹配
     document.getElementById("btnQuick").addEventListener("click", () => {
       const t = translations[currentLang];
       const randomText = t.results[Math.floor(Math.random()*t.results.length)];
@@ -288,7 +290,6 @@
       document.getElementById("result").style.display = "block";
     });
 
-    // 深度提问
     document.getElementById("btnDeep").addEventListener("click", () => {
       const t = translations[currentLang];
       document.getElementById("matchText").textContent = currentLang==="zh"
@@ -299,10 +300,8 @@
       document.getElementById("result").style.display = "block";
     });
 
-    // 默认中文
     setLanguage("zh");
 
-    // 生成星星
     const starsContainer = document.getElementById("stars");
     for(let i=0;i<80;i++){
       const s=document.createElement("div");
