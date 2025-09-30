@@ -2,120 +2,20 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>Relastro - 星座配对</title>
+  <title>测试按钮 - 星座匹配</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Flatpickr 日期+时间选择器 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-
   <style>
     body {
-      margin: 0;
-      font-family: "Arial", sans-serif;
-      background: radial-gradient(circle at top, #1a1a40, #000010);
-      color: #fff;
+      font-family: Arial, sans-serif;
+      background: #000014;
+      color: white;
       text-align: center;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
+      padding: 50px;
     }
-
-    /* 星空大星星闪烁 */
-    .stars {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      overflow: hidden;
-      z-index: 0;
-    }
-    .star {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: white;
-      border-radius: 50%;
-      opacity: 0.7;
-      animation: twinkle 2s infinite alternate;
-    }
-    .star.big {
-      width: 10px; height: 10px;
-      background: #ffd700;
-      opacity: 0.9;
-      animation: twinkle 3s infinite alternate;
-    }
-    @keyframes twinkle {
-      from { opacity: 0.3; }
-      to { opacity: 1; }
-    }
-
-    header {
-      padding: 20px;
-      position: relative;
-      z-index: 1;
-    }
-    header h1 {
-      font-size: 2rem;
-      color: #ffd700;
-      text-shadow: 0 0 8px #fff4aa;
-    }
-
-    .lang-switch {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-    .lang-switch button {
-      background: none;
-      border: none;
-      color: #fff;
-      margin: 0 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .form-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-      z-index: 1;
-      position: relative;
-      flex-wrap: wrap;
-    }
-    .person-form {
-      flex: 1;
-      max-width: 350px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
-    }
-
-    h3 {
-      margin-top: 0;
-      color: #ff8c00;
-    }
-    label {
-      display: block;
-      text-align: left;
-      margin: 8px 0 4px;
-      font-size: 0.9rem;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      margin-bottom: 10px;
-    }
-
     .actions {
       margin-top: 20px;
     }
-    button.action-btn {
+    button {
       padding: 10px 20px;
       font-size: 1rem;
       border: none;
@@ -123,201 +23,45 @@
       cursor: pointer;
       background: linear-gradient(45deg, #ff8c00, #ff0080);
       color: #fff;
-      transition: transform 0.2s;
     }
-    button.action-btn:hover {
-      transform: scale(1.05);
-    }
-
     .result {
-      margin: 20px auto;
+      margin-top: 20px;
       padding: 15px;
-      max-width: 600px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(255,255,255,0.1);
       border-radius: 8px;
       display: none;
-      position: relative;
-      z-index: 1;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 0.8rem;
-      color: #aaa;
-      padding: 20px;
-      z-index: 1;
-      position: relative;
     }
   </style>
 </head>
 <body>
-  <!-- 星空背景 -->
-  <div class="stars">
-    <div class="star" style="top:10%; left:20%"></div>
-    <div class="star big" style="top:30%; left:40%"></div>
-    <div class="star" style="top:50%; left:70%"></div>
-    <div class="star big" style="top:70%; left:25%"></div>
-    <div class="star" style="top:80%; left:60%"></div>
-    <div class="star big" style="top:20%; left:85%"></div>
-    <div class="star" style="top:40%; left:10%"></div>
-    <div class="star big" style="top:60%; left:90%"></div>
-  </div>
+  <h1>星座匹配测试</h1>
+  <p>输入两个人的姓名，点击查看匹配结果</p>
 
-  <header>
-    <h1 id="title">Relastro - 星座配对</h1>
-    <div class="lang-switch">
-      <button data-lang="zh">中文</button>|
-      <button data-lang="en">English</button>|
-      <button data-lang="fr">Français</button>|
-      <button data-lang="es">Español</button>
-    </div>
-    <p id="subtitle">输入两个人的出生信息，看看你们的缘分与性格匹配</p>
-  </header>
-
-  <div class="form-container">
-    <!-- 人物 A -->
-    <form class="person-form" id="formA">
-      <h3 id="personA">人物 A</h3>
-      <label id="labelNameA">姓名 A：</label>
-      <input type="text" id="nameA" required>
-      <label id="labelGenderA">性别 A：</label>
-      <select id="genderA"></select>
-      <label id="labelCountryA">出生国家 A：</label>
-      <input type="text" id="countryA" required>
-      <label id="labelDobA">出生日期 A：</label>
-      <input type="text" id="dobA" required>
-      <label id="labelTimeA">出生时辰 A（可选）：</label>
-      <input type="text" id="timeA">
-    </form>
-
-    <!-- 人物 B -->
-    <form class="person-form" id="formB">
-      <h3 id="personB">人物 B</h3>
-      <label id="labelNameB">姓名 B：</label>
-      <input type="text" id="nameB" required>
-      <label id="labelGenderB">性别 B：</label>
-      <select id="genderB"></select>
-      <label id="labelCountryB">出生国家 B：</label>
-      <input type="text" id="countryB" required>
-      <label id="labelDobB">出生日期 B：</label>
-      <input type="text" id="dobB" required>
-      <label id="labelTimeB">出生时辰 B（可选）：</label>
-      <input type="text" id="timeB">
-    </form>
-  </div>
+  <input type="text" id="nameA" placeholder="姓名 A">
+  <input type="text" id="nameB" placeholder="姓名 B">
 
   <div class="actions">
-    <button id="btnMatch" type="button" class="action-btn">查看匹配</button>
+    <button id="btnMatch" type="button">查看匹配</button>
   </div>
 
   <div id="result" class="result">
-    <h2 id="resultTitle">匹配结果</h2>
+    <h2>匹配结果</h2>
     <p id="matchText"></p>
-    <!-- 支付链接：以后替换 example.com 就能用 -->
-    <p><a href="https://example.com" id="payLink" target="_blank" style="color:#00ffff; font-weight:bold;">获取完整报告 (49€)</a></p>
   </div>
 
-  <footer>
-    © 2025 Relastro - Love & Stars
-  </footer>
-
   <script>
-    // 当前语言
-    let currentLang = "zh";
-
-    const translations = {
-      zh: {
-        title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配",
-        personA:"人物 A", personB:"人物 B",
-        labelNameA:"姓名 A：", labelGenderA:"性别 A：", labelCountryA:"出生国家 A：",
-        labelDobA:"出生日期 A：", labelTimeA:"出生时辰 A（可选）：",
-        labelNameB:"姓名 B：", labelGenderB:"性别 B：", labelCountryB:"出生国家 B：",
-        labelDobB:"出生日期 B：", labelTimeB:"出生时辰 B（可选）：",
-        btnMatch:"查看匹配", resultTitle:"匹配结果",
-        results:["初步分析：你们很合适。","初步分析：需要更多努力。","初步分析：有一些挑战，但机会也不少。"],
-        selectPlaceholder:"请选择", male:"男", female:"女",
-        dateFormat:"Y-m-d", timeFormat:"H:i", flatpickrLang:"zh"
-      },
-      en: {
-        title:"Relastro - Match by Stars", subtitle:"Enter two people's birth details to see compatibility",
-        personA:"Person A", personB:"Person B",
-        labelNameA:"Name A:", labelGenderA:"Gender A:", labelCountryA:"Country A:",
-        labelDobA:"Date of Birth A:", labelTimeA:"Time of Birth A (optional):",
-        labelNameB:"Name B:", labelGenderB:"Gender B:", labelCountryB:"Country B:",
-        labelDobB:"Date of Birth B:", labelTimeB:"Time of Birth B (optional):",
-        btnMatch:"Check Match", resultTitle:"Match Result",
-        results:["Preliminary analysis: You are very compatible.","Preliminary analysis: Needs more effort.","Preliminary analysis: Some challenges, but opportunities too."],
-        selectPlaceholder:"Select", male:"Male", female:"Female",
-        dateFormat:"Y-m-d", timeFormat:"H:i", flatpickrLang:"default"
-      },
-      fr: {
-        title:"Relastro - Compatibilité des étoiles", subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité",
-        personA:"Personne A", personB:"Personne B",
-        labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :",
-        labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :",
-        labelNameB:"Nom B :", labelGenderB:"Sexe B :", labelCountryB:"Pays B :",
-        labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :",
-        btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité",
-        results:["Analyse préliminaire : Vous êtes très compatibles.","Analyse préliminaire : Besoin de plus d'efforts.","Analyse préliminaire : Quelques défis, mais aussi des opportunités."],
-        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme",
-        dateFormat:"d/m/Y", timeFormat:"H:i", flatpickrLang:"fr"
-      },
-      es: {
-        title:"Relastro - Compatibilidad de estrellas", subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad",
-        personA:"Persona A", personB:"Persona B",
-        labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:",
-        labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):",
-        labelNameB:"Nombre B:", labelGenderB:"Género B:", labelCountryB:"País B:",
-        labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):",
-        btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad",
-        results:["Análisis preliminar: Muy compatibles.","Análisis preliminar: Requiere más esfuerzo.","Análisis preliminar: Algunos desafíos, pero también oportunidades."],
-        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer",
-        dateFormat:"d/m/Y", timeFormat:"H:i", flatpickrLang:"es"
-      }
-    };
-
-    // 设置语言
-    function setLanguage(lang) {
-      currentLang = lang; // 保存当前语言
-      const t = translations[lang];
-      for (let key in t) {
-        if (document.getElementById(key)) {
-          document.getElementById(key).innerHTML = t[key];
-        }
-      }
-      document.getElementById("btnMatch").textContent = t.btnMatch;
-
-      // 更新性别下拉
-      const genderA = document.getElementById("genderA");
-      const genderB = document.getElementById("genderB");
-      genderA.innerHTML = `<option value="">${t.selectPlaceholder}</option><option value="male">${t.male}</option><option value="female">${t.female}</option>`;
-      genderB.innerHTML = genderA.innerHTML;
-
-      // 日期+时间选择器
-      flatpickr("#dobA", { dateFormat: t.dateFormat, locale: t.flatpickrLang });
-      flatpickr("#dobB", { dateFormat: t.dateFormat, locale: t.flatpickrLang });
-      flatpickr("#timeA", { enableTime:true, noCalendar:true, dateFormat: t.timeFormat, time_24hr:true, locale: t.flatpickrLang });
-      flatpickr("#timeB", { enableTime:true, noCalendar:true, dateFormat: t.timeFormat, time_24hr:true, locale: t.flatpickrLang });
-    }
-
-    // 切换语言按钮
-    document.querySelectorAll(".lang-switch button").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        setLanguage(btn.dataset.lang);
-      });
-    });
-
-    // 查看匹配
-    document.getElementById("btnMatch").addEventListener("click", ()=>{
-      const t = translations[currentLang] || translations["zh"];
-      const randomText = t.results[Math.floor(Math.random() * t.results.length)];
+    document.getElementById("btnMatch").addEventListener("click", () => {
+      const nameA = document.getElementById("nameA").value || "人物A";
+      const nameB = document.getElementById("nameB").value || "人物B";
+      const results = [
+        "初步分析：" + nameA + " 和 " + nameB + " 非常合适！",
+        "初步分析：" + nameA + " 和 " + nameB + " 需要更多努力。",
+        "初步分析：" + nameA + " 和 " + nameB + " 有一些挑战，但也有机会。"
+      ];
+      const randomText = results[Math.floor(Math.random() * results.length)];
       document.getElementById("matchText").textContent = randomText;
       document.getElementById("result").style.display = "block";
-      document.getElementById("result").scrollIntoView({behavior:"smooth"});
     });
-
-    // 默认中文
-    setLanguage("zh");
   </script>
 </body>
 </html>
