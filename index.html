@@ -17,30 +17,24 @@
       overflow-x: hidden;
     }
 
-    /* 星空背景小星星 */
-.stars {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0; left: 0;
-  z-index: 0;
-  background: radial-gradient(circle at 20% 20%, #ffffff 1px, transparent 1px),
-              radial-gradient(circle at 80% 40%, #ffffff 1px, transparent 1px),
-              radial-gradient(circle at 60% 80%, #ffffff 1px, transparent 1px),
-              radial-gradient(circle at 30% 70%, #ffffff 1px, transparent 1px);
-  background-size: 200px 200px;
-  animation: moveStars 100s linear infinite;
-}
-
-@keyframes moveStars {
-  from { background-position: 0 0, 0 0, 0 0, 0 0; }
-  to { background-position: 10000px 5000px, -8000px 4000px, 6000px -6000px, -3000px -5000px; }
-}
-
+    /* 星空背景 */
+    .stars {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 0;
+      background: radial-gradient(circle at 20% 20%, #ffffff 1px, transparent 1px),
+                  radial-gradient(circle at 80% 40%, #ffffff 1px, transparent 1px),
+                  radial-gradient(circle at 60% 80%, #ffffff 1px, transparent 1px),
+                  radial-gradient(circle at 30% 70%, #ffffff 1px, transparent 1px);
+      background-size: 200px 200px;
+      animation: moveStars 100s linear infinite;
+    }
 
     @keyframes moveStars {
-      from {background-position: 0 0;}
-      to {background-position: -10000px 5000px;}
+      from { background-position: 0 0, 0 0, 0 0, 0 0; }
+      to { background-position: 10000px 5000px, -8000px 4000px, 6000px -6000px, -3000px -5000px; }
     }
 
     header {
@@ -77,6 +71,7 @@
       padding: 20px;
       z-index: 1;
       position: relative;
+      flex-wrap: wrap;
     }
 
     .person-form {
@@ -112,7 +107,7 @@
       margin-top: 20px;
     }
 
-    button {
+    button.action-btn {
       padding: 10px 20px;
       font-size: 1rem;
       border: none;
@@ -123,7 +118,7 @@
       transition: transform 0.2s;
     }
 
-    button:hover {
+    button.action-btn:hover {
       transform: scale(1.05);
     }
 
@@ -169,11 +164,7 @@
       <label id="labelNameA">姓名 A：</label>
       <input type="text" id="nameA" required>
       <label id="labelGenderA">性别 A：</label>
-      <select id="genderA" required>
-        <option value="">请选择</option>
-        <option value="male">男</option>
-        <option value="female">女</option>
-      </select>
+      <select id="genderA"></select>
       <label id="labelCountryA">出生国家 A：</label>
       <input type="text" id="countryA" required>
       <label id="labelDobA">出生日期 A：</label>
@@ -188,11 +179,7 @@
       <label id="labelNameB">姓名 B：</label>
       <input type="text" id="nameB" required>
       <label id="labelGenderB">性别 B：</label>
-      <select id="genderB" required>
-        <option value="">请选择</option>
-        <option value="male">男</option>
-        <option value="female">女</option>
-      </select>
+      <select id="genderB"></select>
       <label id="labelCountryB">出生国家 B：</label>
       <input type="text" id="countryB" required>
       <label id="labelDobB">出生日期 B：</label>
@@ -203,7 +190,7 @@
   </div>
 
   <div class="actions">
-    <button id="btnMatch">查看匹配</button>
+    <button id="btnMatch" class="action-btn">查看匹配</button>
   </div>
 
   <div id="result" class="result">
@@ -218,10 +205,42 @@
 
   <script>
     const translations = {
-      zh: { title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配", personA:"人物 A", personB:"人物 B", labelNameA:"姓名 A：", labelGenderA:"性别 A：", labelCountryA:"出生国家 A：", labelDobA:"出生日期 A：", labelTimeA:"出生时辰 A（可选）：", labelNameB:"姓名 B：", labelGenderB:"性别 B：", labelCountryB:"出生国家 B：", labelDobB:"出生日期 B：", labelTimeB:"出生时辰 B（可选）：", btnMatch:"查看匹配", resultTitle:"匹配结果", matchText:"你们的性格契合度较高，彼此互补，充满可能性！"},
-      en: { title:"Relastro - Match by Stars", subtitle:"Enter two people's birth details to see compatibility", personA:"Person A", personB:"Person B", labelNameA:"Name A:", labelGenderA:"Gender A:", labelCountryA:"Country A:", labelDobA:"Date of Birth A:", labelTimeA:"Time of Birth A (optional):", labelNameB:"Name B:", labelGenderB:"Gender B:", labelCountryB:"Country B:", labelDobB:"Date of Birth B:", labelTimeB:"Time of Birth B (optional):", btnMatch:"Check Match", resultTitle:"Match Result", matchText:"Your personalities complement each other, with strong potential!"},
-      fr: { title:"Relastro - Compatibilité des étoiles", subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité", personA:"Personne A", personB:"Personne B", labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :", labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :", labelNameB:"Nom B :", labelGenderB:"Sexe B :", labelCountryB:"Pays B :", labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :", btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité", matchText:"Vos personnalités sont très compatibles, avec un grand potentiel !"},
-      es: { title:"Relastro - Compatibilidad de estrellas", subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad", personA:"Persona A", personB:"Persona B", labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:", labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):", labelNameB:"Nombre B:", labelGenderB:"Género B:", labelCountryB:"País B:", labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):", btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad", matchText:"¡Vuestras personalidades son muy compatibles y con gran potencial!"}
+      zh: {
+        title:"Relastro - 星座配对",
+        subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配",
+        personA:"人物 A", personB:"人物 B",
+        labelNameA:"姓名 A：", labelGenderA:"性别 A：", labelCountryA:"出生国家 A：", labelDobA:"出生日期 A：", labelTimeA:"出生时辰 A（可选）：",
+        labelNameB:"姓名 B：", labelGenderB:"性别 B：", labelCountryB:"出生国家 B：", labelDobB:"出生日期 B：", labelTimeB:"出生时辰 B（可选）：",
+        btnMatch:"查看匹配", resultTitle:"匹配结果", matchText:"你们的性格契合度较高，彼此互补，充满可能性！",
+        selectPlaceholder:"请选择", male:"男", female:"女", datePlaceholder:"年/月/日"
+      },
+      en: {
+        title:"Relastro - Match by Stars",
+        subtitle:"Enter two people's birth details to see compatibility",
+        personA:"Person A", personB:"Person B",
+        labelNameA:"Name A:", labelGenderA:"Gender A:", labelCountryA:"Country A:", labelDobA:"Date of Birth A:", labelTimeA:"Time of Birth A (optional):",
+        labelNameB:"Name B:", labelGenderB:"Gender B:", labelCountryB:"Country B:", labelDobB:"Date of Birth B:", labelTimeB:"Time of Birth B (optional):",
+        btnMatch:"Check Match", resultTitle:"Match Result", matchText:"Your personalities complement each other, with strong potential!",
+        selectPlaceholder:"Select", male:"Male", female:"Female", datePlaceholder:"YYYY-MM-DD"
+      },
+      fr: {
+        title:"Relastro - Compatibilité des étoiles",
+        subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité",
+        personA:"Personne A", personB:"Personne B",
+        labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :", labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :",
+        labelNameB:"Nom B :", labelGenderB:"Sexe B :", labelCountryB:"Pays B :", labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :",
+        btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité", matchText:"Vos personnalités sont très compatibles, avec un grand potentiel !",
+        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme", datePlaceholder:"AAAA-MM-JJ"
+      },
+      es: {
+        title:"Relastro - Compatibilidad de estrellas",
+        subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad",
+        personA:"Persona A", personB:"Persona B",
+        labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:", labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):",
+        labelNameB:"Nombre B:", labelGenderB:"Género B:", labelCountryB:"País B:", labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):",
+        btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad", matchText:"¡Vuestras personalidades son muy compatibles y con gran potencial!",
+        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer", datePlaceholder:"AAAA-MM-DD"
+      }
     };
 
     function setLanguage(lang) {
@@ -232,6 +251,20 @@
         }
       }
       document.getElementById("btnMatch").textContent = t.btnMatch;
+
+      // 更新性别下拉菜单
+      const genderA = document.getElementById("genderA");
+      const genderB = document.getElementById("genderB");
+      genderA.innerHTML = `
+        <option value="">${t.selectPlaceholder}</option>
+        <option value="male">${t.male}</option>
+        <option value="female">${t.female}</option>
+      `;
+      genderB.innerHTML = genderA.innerHTML;
+
+      // 更新日期提示
+      document.getElementById("dobA").placeholder = t.datePlaceholder;
+      document.getElementById("dobB").placeholder = t.datePlaceholder;
     }
 
     document.querySelectorAll(".lang-switch button").forEach(btn=>{
@@ -243,6 +276,7 @@
       document.getElementById("result").scrollIntoView({behavior:"smooth"});
     });
 
+    // 默认中文
     setLanguage("zh");
   </script>
 </body>
