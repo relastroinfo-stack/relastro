@@ -17,24 +17,34 @@
       overflow-x: hidden;
     }
 
-    /* 星空背景 */
+    /* 星空闪烁大星星 */
     .stars {
-      width: 100%;
-      height: 100%;
       position: absolute;
       top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
       z-index: 0;
-      background: radial-gradient(circle at 20% 20%, #ffffff 1px, transparent 1px),
-                  radial-gradient(circle at 80% 40%, #ffffff 1px, transparent 1px),
-                  radial-gradient(circle at 60% 80%, #ffffff 1px, transparent 1px),
-                  radial-gradient(circle at 30% 70%, #ffffff 1px, transparent 1px);
-      background-size: 200px 200px;
-      animation: moveStars 100s linear infinite;
     }
 
-    @keyframes moveStars {
-      from { background-position: 0 0, 0 0, 0 0, 0 0; }
-      to { background-position: 10000px 5000px, -8000px 4000px, 6000px -6000px, -3000px -5000px; }
+    .star {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    .star.big {
+      width: 6px; height: 6px;
+      background: #ffd700;
+      opacity: 0.9;
+      animation: twinkle 3s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
     }
 
     header {
@@ -144,7 +154,14 @@
   </style>
 </head>
 <body>
-  <div class="stars"></div>
+  <!-- 星空背景 -->
+  <div class="stars">
+    <div class="star" style="top:20%; left:30%"></div>
+    <div class="star big" style="top:40%; left:70%"></div>
+    <div class="star" style="top:60%; left:20%"></div>
+    <div class="star big" style="top:80%; left:50%"></div>
+    <div class="star" style="top:30%; left:80%"></div>
+  </div>
 
   <header>
     <h1 id="title">Relastro - 星座配对</h1>
@@ -168,7 +185,7 @@
       <label id="labelCountryA">出生国家 A：</label>
       <input type="text" id="countryA" required>
       <label id="labelDobA">出生日期 A：</label>
-      <input type="date" id="dobA" required>
+      <input type="text" id="dobA" required>
       <label id="labelTimeA">出生时辰 A（可选）：</label>
       <input type="time" id="timeA">
     </form>
@@ -183,7 +200,7 @@
       <label id="labelCountryB">出生国家 B：</label>
       <input type="text" id="countryB" required>
       <label id="labelDobB">出生日期 B：</label>
-      <input type="date" id="dobB" required>
+      <input type="text" id="dobB" required>
       <label id="labelTimeB">出生时辰 B（可选）：</label>
       <input type="time" id="timeB">
     </form>
@@ -230,7 +247,7 @@
         labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :", labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :",
         labelNameB:"Nom B :", labelGenderB:"Sexe B :", labelCountryB:"Pays B :", labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :",
         btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité", matchText:"Vos personnalités sont très compatibles, avec un grand potentiel !",
-        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme", datePlaceholder:"AAAA-MM-JJ"
+        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme", datePlaceholder:"JJ/MM/AAAA"
       },
       es: {
         title:"Relastro - Compatibilidad de estrellas",
@@ -239,7 +256,7 @@
         labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:", labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):",
         labelNameB:"Nombre B:", labelGenderB:"Género B:", labelCountryB:"País B:", labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):",
         btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad", matchText:"¡Vuestras personalidades son muy compatibles y con gran potencial!",
-        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer", datePlaceholder:"AAAA-MM-DD"
+        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer", datePlaceholder:"DD/MM/AAAA"
       }
     };
 
