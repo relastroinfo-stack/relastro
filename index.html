@@ -12,11 +12,31 @@
       background: radial-gradient(circle at top, #1a1a40, #000010);
       color: #fff;
       text-align: center;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 星空背景小星星 */
+    .stars {
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://i.ibb.co/7jv6s0J/stars.png') repeat;
+      position: absolute;
+      top: 0; left: 0;
+      animation: moveStars 200s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveStars {
+      from {background-position: 0 0;}
+      to {background-position: -10000px 5000px;}
     }
 
     header {
       padding: 20px;
       position: relative;
+      z-index: 1;
     }
 
     header h1 {
@@ -31,40 +51,59 @@
       right: 20px;
     }
 
-    .lang-switch select {
-      padding: 6px;
-      border-radius: 6px;
+    .lang-switch button {
+      background: none;
       border: none;
-      background: #333;
       color: #fff;
+      margin: 0 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    form {
-      max-width: 600px;
-      margin: 20px auto;
+    .form-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .person-form {
+      flex: 1;
+      max-width: 350px;
       background: rgba(255, 255, 255, 0.05);
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255,255,255,0.2);
     }
 
+    h3 {
+      margin-top: 0;
+      color: #ff8c00;
+    }
+
     label {
       display: block;
       text-align: left;
-      margin: 10px 0 5px;
+      margin: 8px 0 4px;
       font-size: 0.9rem;
     }
 
     input, select {
       width: 100%;
-      padding: 10px;
+      padding: 8px;
       border-radius: 6px;
       border: none;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      margin-top: 20px;
     }
 
     button {
-      padding: 12px 24px;
+      padding: 10px 20px;
       font-size: 1rem;
       border: none;
       border-radius: 6px;
@@ -79,100 +118,88 @@
     }
 
     .result {
-      margin-top: 20px;
+      margin: 20px auto;
       padding: 15px;
-      background: rgba(0, 0, 0, 0.4);
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.6);
       border-radius: 8px;
       display: none;
-    }
-
-    .cta {
-      margin-top: 20px;
-    }
-
-    .cta a {
-      color: #00ffff;
-      font-weight: bold;
-      text-decoration: none;
+      position: relative;
+      z-index: 1;
     }
 
     footer {
-      margin-top: 30px;
+      margin-top: 40px;
       font-size: 0.8rem;
       color: #aaa;
       padding: 20px;
+      z-index: 1;
+      position: relative;
     }
   </style>
 </head>
 <body>
+  <div class="stars"></div>
+
   <header>
     <h1 id="title">Relastro - 星座配对</h1>
     <div class="lang-switch">
-      <select id="language">
-        <option value="zh">中文</option>
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-      </select>
+      <button data-lang="zh">中文</button>|
+      <button data-lang="en">English</button>|
+      <button data-lang="fr">Français</button>|
+      <button data-lang="es">Español</button>
     </div>
     <p id="subtitle">输入两个人的出生信息，看看你们的缘分与性格匹配</p>
   </header>
 
-  <form id="matchForm">
-    <h3 id="personA">人物 A</h3>
-    <label id="labelNameA">姓名 A：</label>
-    <input type="text" id="nameA" required>
+  <div class="form-container">
+    <!-- 人物 A -->
+    <form class="person-form" id="formA">
+      <h3 id="personA">人物 A</h3>
+      <label id="labelNameA">姓名 A：</label>
+      <input type="text" id="nameA" required>
+      <label id="labelGenderA">性别 A：</label>
+      <select id="genderA" required>
+        <option value="">请选择</option>
+        <option value="male">男</option>
+        <option value="female">女</option>
+      </select>
+      <label id="labelCountryA">出生国家 A：</label>
+      <input type="text" id="countryA" required>
+      <label id="labelDobA">出生日期 A：</label>
+      <input type="date" id="dobA" required>
+      <label id="labelTimeA">出生时辰 A（可选）：</label>
+      <input type="time" id="timeA">
+    </form>
 
-    <label id="labelGenderA">性别 A：</label>
-    <select id="genderA" required>
-      <option value="">请选择</option>
-      <option value="male">男</option>
-      <option value="female">女</option>
-    </select>
+    <!-- 人物 B -->
+    <form class="person-form" id="formB">
+      <h3 id="personB">人物 B</h3>
+      <label id="labelNameB">姓名 B：</label>
+      <input type="text" id="nameB" required>
+      <label id="labelGenderB">性别 B：</label>
+      <select id="genderB" required>
+        <option value="">请选择</option>
+        <option value="male">男</option>
+        <option value="female">女</option>
+      </select>
+      <label id="labelCountryB">出生国家 B：</label>
+      <input type="text" id="countryB" required>
+      <label id="labelDobB">出生日期 B：</label>
+      <input type="date" id="dobB" required>
+      <label id="labelTimeB">出生时辰 B（可选）：</label>
+      <input type="time" id="timeB">
+    </form>
+  </div>
 
-    <label id="labelCountryA">出生国家 A：</label>
-    <input type="text" id="countryA" required>
-
-    <label id="labelDobA">出生日期 A：</label>
-    <input type="date" id="dobA" required>
-
-    <label id="labelTimeA">出生时辰 A（可选）：</label>
-    <input type="time" id="timeA">
-
-    <hr style="margin:20px 0; border:1px dashed #555;">
-
-    <h3 id="personB">人物 B</h3>
-    <label id="labelNameB">姓名 B：</label>
-    <input type="text" id="nameB" required>
-
-    <label id="labelGenderB">性别 B：</label>
-    <select id="genderB" required>
-      <option value="">请选择</option>
-      <option value="male">男</option>
-      <option value="female">女</option>
-    </select>
-
-    <label id="labelCountryB">出生国家 B：</label>
-    <input type="text" id="countryB" required>
-
-    <label id="labelDobB">出生日期 B：</label>
-    <input type="date" id="dobB" required>
-
-    <label id="labelTimeB">出生时辰 B（可选）：</label>
-    <input type="time" id="timeB">
-
-    <button type="submit" id="btnMatch">查看匹配</button>
-  </form>
+  <div class="actions">
+    <button id="btnMatch">查看匹配</button>
+  </div>
 
   <div id="result" class="result">
     <h2 id="resultTitle">匹配结果</h2>
     <p id="matchText">你们的性格契合度较高，彼此互补，充满可能性！</p>
-    <div class="cta">
-      <p id="ctaText">想查看完整配对报告（详细分析 + 指导建议）？</p>
-      <p id="price">只需 <strong>49€</strong> 即可获取。</p>
-      <p id="emailPrompt">请留下您的邮箱，我们会联系您：<br>
-        <input type="email" placeholder="输入邮箱地址"></p>
-      <p><a href="#">立即支付</a></p>
-    </div>
+    <p><a href="https://example.com" id="payLink" target="_blank" style="color:#00ffff; font-weight:bold;">获取完整报告 (49€)</a></p>
   </div>
 
   <footer>
@@ -181,103 +208,32 @@
 
   <script>
     const translations = {
-      zh: {
-        title: "Relastro - 星座配对",
-        subtitle: "输入两个人的出生信息，看看你们的缘分与性格匹配",
-        personA: "人物 A",
-        labelNameA: "姓名 A：",
-        labelGenderA: "性别 A：",
-        labelCountryA: "出生国家 A：",
-        labelDobA: "出生日期 A：",
-        labelTimeA: "出生时辰 A（可选）：",
-        personB: "人物 B",
-        labelNameB: "姓名 B：",
-        labelGenderB: "性别 B：",
-        labelCountryB: "出生国家 B：",
-        labelDobB: "出生日期 B：",
-        labelTimeB: "出生时辰 B（可选）：",
-        btnMatch: "查看匹配",
-        resultTitle: "匹配结果",
-        matchText: "你们的性格契合度较高，彼此互补，充满可能性！",
-        ctaText: "想查看完整配对报告（详细分析 + 指导建议）？",
-        price: "只需 <strong>49€</strong> 即可获取。",
-        emailPrompt: "请留下您的邮箱，我们会联系您："
-      },
-      en: {
-        title: "Relastro - Match by Stars",
-        subtitle: "Enter birth details of two people to see compatibility",
-        personA: "Person A",
-        labelNameA: "Name A:",
-        labelGenderA: "Gender A:",
-        labelCountryA: "Country A:",
-        labelDobA: "Date of Birth A:",
-        labelTimeA: "Time of Birth A (optional):",
-        personB: "Person B",
-        labelNameB: "Name B:",
-        labelGenderB: "Gender B:",
-        labelCountryB: "Country B:",
-        labelDobB: "Date of Birth B:",
-        labelTimeB: "Time of Birth B (optional):",
-        btnMatch: "Check Match",
-        resultTitle: "Match Result",
-        matchText: "Your personalities complement each other, with strong potential!",
-        ctaText: "Want to see the full compatibility report (detailed analysis + guidance)?",
-        price: "Only <strong>49€</strong> to get it.",
-        emailPrompt: "Leave your email and we will contact you:"
-      },
-      fr: {
-        title: "Relastro - Compatibilité des étoiles",
-        subtitle: "Entrez les informations de naissance de deux personnes pour voir leur compatibilité",
-        personA: "Personne A",
-        labelNameA: "Nom A :",
-        labelGenderA: "Sexe A :",
-        labelCountryA: "Pays A :",
-        labelDobA: "Date de naissance A :",
-        labelTimeA: "Heure de naissance A (optionnel) :",
-        personB: "Personne B",
-        labelNameB: "Nom B :",
-        labelGenderB: "Sexe B :",
-        labelCountryB: "Pays B :",
-        labelDobB: "Date de naissance B :",
-        labelTimeB: "Heure de naissance B (optionnel) :",
-        btnMatch: "Voir la compatibilité",
-        resultTitle: "Résultat de compatibilité",
-        matchText: "Vos personnalités sont très compatibles, avec un grand potentiel !",
-        ctaText: "Vous voulez voir le rapport complet (analyse détaillée + conseils) ?",
-        price: "Seulement <strong>49€</strong>.",
-        emailPrompt: "Laissez votre email et nous vous contacterons :"
-      }
+      zh: { title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配", personA:"人物 A", personB:"人物 B", labelNameA:"姓名 A：", labelGenderA:"性别 A：", labelCountryA:"出生国家 A：", labelDobA:"出生日期 A：", labelTimeA:"出生时辰 A（可选）：", labelNameB:"姓名 B：", labelGenderB:"性别 B：", labelCountryB:"出生国家 B：", labelDobB:"出生日期 B：", labelTimeB:"出生时辰 B（可选）：", btnMatch:"查看匹配", resultTitle:"匹配结果", matchText:"你们的性格契合度较高，彼此互补，充满可能性！"},
+      en: { title:"Relastro - Match by Stars", subtitle:"Enter two people's birth details to see compatibility", personA:"Person A", personB:"Person B", labelNameA:"Name A:", labelGenderA:"Gender A:", labelCountryA:"Country A:", labelDobA:"Date of Birth A:", labelTimeA:"Time of Birth A (optional):", labelNameB:"Name B:", labelGenderB:"Gender B:", labelCountryB:"Country B:", labelDobB:"Date of Birth B:", labelTimeB:"Time of Birth B (optional):", btnMatch:"Check Match", resultTitle:"Match Result", matchText:"Your personalities complement each other, with strong potential!"},
+      fr: { title:"Relastro - Compatibilité des étoiles", subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité", personA:"Personne A", personB:"Personne B", labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :", labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :", labelNameB:"Nom B :", labelGenderB:"Sexe B :", labelCountryB:"Pays B :", labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :", btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité", matchText:"Vos personnalités sont très compatibles, avec un grand potentiel !"},
+      es: { title:"Relastro - Compatibilidad de estrellas", subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad", personA:"Persona A", personB:"Persona B", labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:", labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):", labelNameB:"Nombre B:", labelGenderB:"Género B:", labelCountryB:"País B:", labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):", btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad", matchText:"¡Vuestras personalidades son muy compatibles y con gran potencial!"}
     };
 
-    const langSelect = document.getElementById("language");
-    const elements = [
-      "title","subtitle","personA","labelNameA","labelGenderA","labelCountryA","labelDobA","labelTimeA",
-      "personB","labelNameB","labelGenderB","labelCountryB","labelDobB","labelTimeB",
-      "btnMatch","resultTitle","matchText","ctaText","price","emailPrompt"
-    ];
-
     function setLanguage(lang) {
-      elements.forEach(id => {
-        document.getElementById(id).innerHTML = translations[lang][id];
-      });
+      const t = translations[lang];
+      for (let key in t) {
+        if (document.getElementById(key)) {
+          document.getElementById(key).innerHTML = t[key];
+        }
+      }
+      document.getElementById("btnMatch").textContent = t.btnMatch;
     }
 
-    langSelect.addEventListener("change", (e) => {
-      setLanguage(e.target.value);
+    document.querySelectorAll(".lang-switch button").forEach(btn=>{
+      btn.addEventListener("click",()=>setLanguage(btn.dataset.lang));
     });
 
-    // 默认中文
+    document.getElementById("btnMatch").addEventListener("click", ()=>{
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").scrollIntoView({behavior:"smooth"});
+    });
+
     setLanguage("zh");
-
-    // 表单提交事件
-    const form = document.getElementById("matchForm");
-    const resultDiv = document.getElementById("result");
-
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      resultDiv.style.display = "block";
-      resultDiv.scrollIntoView({ behavior: "smooth" });
-    });
   </script>
 </body>
 </html>
