@@ -2,61 +2,106 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>星座匹配 ✦ 关系问题深度解答</title>
+  <title>Relastro ✦ 星座匹配与关系问题解答</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      background: #000010;
       color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
-      padding: 30px 15px;
-    }
-    h1 {
-      color: #FFD700;
       text-align: center;
-      margin-bottom: 10px;
+      overflow-x: hidden;
     }
-    p.subtitle {
-      text-align: center;
+    /* 星空背景 */
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: white;
+      border-radius: 50%;
       opacity: 0.8;
-      max-width: 600px;
-      margin: 0 auto 30px;
+      animation: twinkle 2s infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.2; transform: scale(0.8);}
+      to { opacity: 1; transform: scale(1.2);}
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 30px 15px 10px;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: #FFD700;
+      text-shadow: 0 0 8px #FFD700, 0 0 16px #fff4aa;
+      border-radius: 12px;
+    }
+    .subtitle {
+      opacity: 0.9;
+      margin-top: 8px;
       line-height: 1.6;
     }
+    .lang {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .lang button {
+      background: none;
+      border: none;
+      color: #fff;
+      margin: 0 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .lang button:hover {
+      color: #FFD700;
+    }
+
     .form-container {
       display: flex;
-      gap: 40px;
-      background: rgba(255, 255, 255, 0.05);
+      gap: 30px;
+      background: rgba(200,200,200,0.15);
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+      box-shadow: 0 0 12px rgba(255,255,255,0.15);
       flex-wrap: wrap;
       justify-content: center;
+      margin-top: 20px;
+      z-index: 1;
+      position: relative;
     }
     .person {
       display: flex;
       flex-direction: column;
       gap: 10px;
       width: 220px;
+      text-align: left;
     }
-    label {
-      font-size: 0.9rem;
-    }
-    input, select, textarea {
+    .person h3 { color: #ff8c00; margin-bottom: 5px; }
+    label { font-size: 0.85rem; }
+    input, select {
       padding: 8px;
       border-radius: 6px;
       border: none;
+      background: rgba(255,255,255,0.85);
       outline: none;
-      width: 100%;
-      background: rgba(255,255,255,0.9);
     }
+
     .actions {
       margin-top: 20px;
       display: flex;
@@ -64,7 +109,7 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    button {
+    button.service-btn {
       padding: 12px 20px;
       font-size: 1rem;
       border: none;
@@ -74,9 +119,10 @@
       color: #fff;
       transition: 0.3s;
     }
-    button:hover {
+    button.service-btn:hover {
       opacity: 0.9;
     }
+
     .result {
       margin-top: 30px;
       padding: 15px;
@@ -84,108 +130,188 @@
       border-radius: 8px;
       display: none;
       max-width: 500px;
-      text-align: center;
+      z-index: 1;
+      position: relative;
     }
     footer {
       margin-top: 40px;
       font-size: 0.8rem;
-      text-align: center;
       max-width: 600px;
       opacity: 0.7;
       line-height: 1.6;
+      z-index: 1;
+      position: relative;
     }
   </style>
 </head>
 <body>
-  <h1>星座匹配 ✦ 关系问题深度解答</h1>
-  <p class="subtitle">
-    通过星座与个性分析，了解你们的契合度；<br>
-    如果遇到具体困惑，可提交问题获取深度解答。
-  </p>
+  <!-- 星空背景 -->
+  <div class="stars" id="stars"></div>
+
+  <header>
+    <div class="lang">
+      <button data-lang="zh">中文</button>|
+      <button data-lang="en">English</button>
+    </div>
+    <h1 id="title">Relastro ✦ 星座匹配与关系问题解答</h1>
+    <p class="subtitle" id="subtitle">
+      通过星座与个性分析，了解你们的契合度；<br>
+      如果遇到具体困惑，可提交问题获取深度解答。
+    </p>
+  </header>
 
   <div class="form-container">
     <div class="person">
-      <h3>人物 A</h3>
-      <label>姓名</label>
+      <h3 id="personA">人物 A</h3>
+      <label id="labelNameA">姓名</label>
       <input type="text" id="nameA" placeholder="姓名 A">
-      <label>性别</label>
+      <label id="labelGenderA">性别</label>
       <select id="genderA">
         <option value="">请选择</option>
         <option value="male">男</option>
         <option value="female">女</option>
       </select>
-      <label>国家</label>
+      <label id="labelCountryA">国家</label>
       <input type="text" id="countryA" placeholder="出生国家">
-      <label>出生日期</label>
+      <label id="labelDobA">出生日期</label>
       <input type="date" id="dobA">
-      <label>出生时辰（可选）</label>
+      <label id="labelTimeA">出生时辰（可选）</label>
       <input type="time" id="timeA">
     </div>
 
     <div class="person">
-      <h3>人物 B</h3>
-      <label>姓名</label>
+      <h3 id="personB">人物 B</h3>
+      <label id="labelNameB">姓名</label>
       <input type="text" id="nameB" placeholder="姓名 B">
-      <label>性别</label>
+      <label id="labelGenderB">性别</label>
       <select id="genderB">
         <option value="">请选择</option>
         <option value="male">男</option>
         <option value="female">女</option>
       </select>
-      <label>国家</label>
+      <label id="labelCountryB">国家</label>
       <input type="text" id="countryB" placeholder="出生国家">
-      <label>出生日期</label>
+      <label id="labelDobB">出生日期</label>
       <input type="date" id="dobB">
-      <label>出生时辰（可选）</label>
+      <label id="labelTimeB">出生时辰（可选）</label>
       <input type="time" id="timeB">
     </div>
   </div>
 
   <div class="actions">
-    <button id="btnQuick">快速匹配 (€19)</button>
-    <button id="btnDeep">关系问题深度解答 (€59)</button>
+    <button id="btnQuick" class="service-btn">快速匹配 (€19)</button>
+    <button id="btnDeep" class="service-btn">关系问题深度解答 (€59)</button>
   </div>
 
   <div id="result" class="result">
-    <h2>结果</h2>
+    <h2 id="resultTitle">结果</h2>
     <p id="matchText"></p>
     <a id="payLink" href="#" target="_blank" style="display:block; margin-top:15px; color:#FFD700; font-weight:bold; text-decoration:none;">
       去支付
     </a>
   </div>
 
-  <footer>
+  <footer id="footer">
     本网站提供的信息仅供娱乐与参考，不构成医疗、法律或财务建议。<br>
     如涉及相关问题，请务必咨询专业人士。
   </footer>
 
   <script>
-    const payQuick = "https://your-payment-link-for-quick.com"; // 这里替换为你的快速匹配支付链接
-    const payDeep = "https://your-payment-link-for-deep.com";   // 这里替换为你的深度提问支付链接
+    // 支付链接（替换成你自己的真实链接）
+    const payQuick = "https://your-payment-link-for-quick.com";
+    const payDeep = "https://your-payment-link-for-deep.com";
+
+    // 多语言文案
+    const translations = {
+      zh: {
+        title: "Relastro ✦ 星座匹配与关系问题解答",
+        subtitle: "通过星座与个性分析，了解你们的契合度；<br>如果遇到具体困惑，可提交问题获取深度解答。",
+        personA: "人物 A", personB: "人物 B",
+        labelNameA: "姓名", labelGenderA: "性别", labelCountryA: "国家", labelDobA: "出生日期", labelTimeA: "出生时辰（可选）",
+        labelNameB: "姓名", labelGenderB: "性别", labelCountryB: "国家", labelDobB: "出生日期", labelTimeB: "出生时辰（可选）",
+        btnQuick: "快速匹配 (€19)", btnDeep: "关系问题深度解答 (€59)",
+        resultTitle: "结果",
+        results: ["契合度很高，彼此互补！","关系需要更多沟通与理解。","有一些挑战，但潜力巨大。"],
+        payQuickText: "去支付 (€19)", payDeepText: "去支付 (€59)",
+        disclaimer: "本网站提供的信息仅供娱乐与参考，不构成医疗、法律或财务建议。<br>如涉及相关问题，请务必咨询专业人士。"
+      },
+      en: {
+        title: "Relastro ✦ Astrology Match & Relationship Insights",
+        subtitle: "Discover compatibility through astrology and personality analysis;<br>If you face specific issues, submit your questions for in-depth insights.",
+        personA: "Person A", personB: "Person B",
+        labelNameA: "Name", labelGenderA: "Gender", labelCountryA: "Country", labelDobA: "Date of Birth", labelTimeA: "Time of Birth (optional)",
+        labelNameB: "Name", labelGenderB: "Gender", labelCountryB: "Country", labelDobB: "Date of Birth", labelTimeB: "Time of Birth (optional)",
+        btnQuick: "Quick Match (€19)", btnDeep: "In-depth Question (€59)",
+        resultTitle: "Result",
+        results: ["Highly compatible and complementary!","Your relationship needs more communication and understanding.","There are challenges, but great potential."],
+        payQuickText: "Proceed to Payment (€19)", payDeepText: "Proceed to Payment (€59)",
+        disclaimer: "The information provided on this website is for entertainment and reference only.<br>It does not constitute medical, legal, or financial advice. Please consult professionals for related issues."
+      }
+    };
+
+    let currentLang = "zh";
+
+    function setLanguage(lang){
+      currentLang = lang;
+      const t = translations[lang];
+      document.getElementById("title").innerHTML = t.title;
+      document.getElementById("subtitle").innerHTML = t.subtitle;
+      document.getElementById("personA").textContent = t.personA;
+      document.getElementById("personB").textContent = t.personB;
+      document.getElementById("labelNameA").textContent = t.labelNameA;
+      document.getElementById("labelGenderA").textContent = t.labelGenderA;
+      document.getElementById("labelCountryA").textContent = t.labelCountryA;
+      document.getElementById("labelDobA").textContent = t.labelDobA;
+      document.getElementById("labelTimeA").textContent = t.labelTimeA;
+      document.getElementById("labelNameB").textContent = t.labelNameB;
+      document.getElementById("labelGenderB").textContent = t.labelGenderB;
+      document.getElementById("labelCountryB").textContent = t.labelCountryB;
+      document.getElementById("labelDobB").textContent = t.labelDobB;
+      document.getElementById("labelTimeB").textContent = t.labelTimeB;
+      document.getElementById("btnQuick").textContent = t.btnQuick;
+      document.getElementById("btnDeep").textContent = t.btnDeep;
+      document.getElementById("resultTitle").textContent = t.resultTitle;
+      document.getElementById("footer").innerHTML = t.disclaimer;
+    }
+
+    document.querySelectorAll(".lang button").forEach(btn=>{
+      btn.addEventListener("click", ()=>setLanguage(btn.dataset.lang));
+    });
 
     // 快速匹配
     document.getElementById("btnQuick").addEventListener("click", () => {
-      const nameA = document.getElementById("nameA").value || "人物A";
-      const nameB = document.getElementById("nameB").value || "人物B";
-      const results = [
-        `${nameA} 和 ${nameB} 的契合度很高，彼此互补！`,
-        `${nameA} 和 ${nameB} 的关系需要更多沟通与理解。`,
-        `${nameA} 和 ${nameB} 有一些挑战，但潜力巨大。`
-      ];
-      const randomText = results[Math.floor(Math.random() * results.length)];
-      document.getElementById("matchText").textContent = randomText + " 👉 完整分析请付费查看 (€19)";
+      const t = translations[currentLang];
+      const randomText = t.results[Math.floor(Math.random()*t.results.length)];
+      document.getElementById("matchText").textContent = randomText;
+      document.getElementById("payLink").textContent = t.payQuickText;
       document.getElementById("payLink").href = payQuick;
-      document.getElementById("payLink").style.display = "block";
       document.getElementById("result").style.display = "block";
     });
 
     // 深度提问
     document.getElementById("btnDeep").addEventListener("click", () => {
-      document.getElementById("matchText").textContent = "请提交你们关系中的具体问题，我们将为你提供深度分析。 👉 服务价格 €59";
+      const t = translations[currentLang];
+      document.getElementById("matchText").textContent = currentLang==="zh"
+        ? "请提交你们关系中的具体问题，我们将为你提供深度分析。"
+        : "Please submit your specific relationship questions for an in-depth analysis.";
+      document.getElementById("payLink").textContent = t.payDeepText;
       document.getElementById("payLink").href = payDeep;
-      document.getElementById("payLink").style.display = "block";
       document.getElementById("result").style.display = "block";
     });
+
+    // 默认中文
+    setLanguage("zh");
+
+    // 生成星星
+    const starsContainer = document.getElementById("stars");
+    for(let i=0;i<80;i++){
+      const s=document.createElement("div");
+      s.className="star";
+      s.style.top=Math.random()*100+"%";
+      s.style.left=Math.random()*100+"%";
+      s.style.animationDuration=(2+Math.random()*3)+"s";
+      starsContainer.appendChild(s);
+    }
   </script>
 </body>
 </html>
