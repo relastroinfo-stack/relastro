@@ -5,7 +5,7 @@
   <title>Relastro - 星座配对</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Flatpickr 日期选择器 -->
+  <!-- Flatpickr 日期+时间选择器 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
@@ -161,7 +161,7 @@
   </style>
 </head>
 <body>
-  <!-- 星空背景（多个大星星） -->
+  <!-- 星空背景 -->
   <div class="stars">
     <div class="star" style="top:10%; left:20%"></div>
     <div class="star big" style="top:30%; left:40%"></div>
@@ -197,7 +197,7 @@
       <label id="labelDobA">出生日期 A：</label>
       <input type="text" id="dobA" required>
       <label id="labelTimeA">出生时辰 A（可选）：</label>
-      <input type="time" id="timeA">
+      <input type="text" id="timeA">
     </form>
 
     <!-- 人物 B -->
@@ -212,17 +212,17 @@
       <label id="labelDobB">出生日期 B：</label>
       <input type="text" id="dobB" required>
       <label id="labelTimeB">出生时辰 B（可选）：</label>
-      <input type="time" id="timeB">
+      <input type="text" id="timeB">
     </form>
   </div>
 
   <div class="actions">
-    <button id="btnMatch" class="action-btn">查看匹配</button>
+    <button id="btnMatch" type="button" class="action-btn">查看匹配</button>
   </div>
 
   <div id="result" class="result">
     <h2 id="resultTitle">匹配结果</h2>
-    <p id="matchText">你们的性格契合度较高，彼此互补，充满可能性！</p>
+    <p id="matchText"></p>
     <p><a href="https://example.com" id="payLink" target="_blank" style="color:#00ffff; font-weight:bold;">获取完整报告 (49€)</a></p>
   </div>
 
@@ -231,39 +231,46 @@
   </footer>
 
   <script>
-    // 多语言翻译
     const translations = {
-      zh: { title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配",
+      zh: {
+        title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配",
         personA:"人物 A", personB:"人物 B", labelNameA:"姓名 A：", labelGenderA:"性别 A：", labelCountryA:"出生国家 A：",
         labelDobA:"出生日期 A：", labelTimeA:"出生时辰 A（可选）：", labelNameB:"姓名 B：", labelGenderB:"性别 B：",
         labelCountryB:"出生国家 B：", labelDobB:"出生日期 B：", labelTimeB:"出生时辰 B（可选）：",
         btnMatch:"查看匹配", resultTitle:"匹配结果",
-        results:["你们的性格契合度较高，彼此互补，充满可能性！","你们之间有天然的吸引力，感情潜力无限。","你们互相理解，容易建立深厚的感情基础。"],
-        selectPlaceholder:"请选择", male:"男", female:"女", dateFormat:"Y-m-d", flatpickrLang:"zh"
+        results:["初步分析：你们很合适。","初步分析：需要更多努力。","初步分析：有一些挑战，但机会也不少。"],
+        selectPlaceholder:"请选择", male:"男", female:"女",
+        dateFormat:"Y-m-d", timeFormat:"H:i", flatpickrLang:"zh"
       },
-      en: { title:"Relastro - Match by Stars", subtitle:"Enter two people's birth details to see compatibility",
+      en: {
+        title:"Relastro - Match by Stars", subtitle:"Enter two people's birth details to see compatibility",
         personA:"Person A", personB:"Person B", labelNameA:"Name A:", labelGenderA:"Gender A:", labelCountryA:"Country A:",
         labelDobA:"Date of Birth A:", labelTimeA:"Time of Birth A (optional):", labelNameB:"Name B:", labelGenderB:"Gender B:",
         labelCountryB:"Country B:", labelDobB:"Date of Birth B:", labelTimeB:"Time of Birth B (optional):",
         btnMatch:"Check Match", resultTitle:"Match Result",
-        results:["Your personalities complement each other, with strong potential!","You share natural chemistry and deep attraction.","You understand each other easily and can build a strong bond."],
-        selectPlaceholder:"Select", male:"Male", female:"Female", dateFormat:"Y-m-d", flatpickrLang:"default"
+        results:["Preliminary analysis: You are very compatible.","Preliminary analysis: Needs more effort.","Preliminary analysis: Some challenges, but opportunities too."],
+        selectPlaceholder:"Select", male:"Male", female:"Female",
+        dateFormat:"Y-m-d", timeFormat:"H:i", flatpickrLang:"default"
       },
-      fr: { title:"Relastro - Compatibilité des étoiles", subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité",
+      fr: {
+        title:"Relastro - Compatibilité des étoiles", subtitle:"Entrez les informations de naissance de deux personnes pour voir leur compatibilité",
         personA:"Personne A", personB:"Personne B", labelNameA:"Nom A :", labelGenderA:"Sexe A :", labelCountryA:"Pays A :",
         labelDobA:"Date de naissance A :", labelTimeA:"Heure de naissance A (optionnel) :", labelNameB:"Nom B :", labelGenderB:"Sexe B :",
         labelCountryB:"Pays B :", labelDobB:"Date de naissance B :", labelTimeB:"Heure de naissance B (optionnel) :",
         btnMatch:"Voir la compatibilité", resultTitle:"Résultat de compatibilité",
-        results:["Vos personnalités sont très compatibles, avec un grand potentiel !","Vous partagez une forte alchimie naturelle.","Vous vous comprenez facilement et pouvez créer un lien profond."],
-        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme", dateFormat:"d/m/Y", flatpickrLang:"fr"
+        results:["Analyse préliminaire : Vous êtes très compatibles.","Analyse préliminaire : Besoin de plus d'efforts.","Analyse préliminaire : Quelques défis, mais aussi des opportunités."],
+        selectPlaceholder:"Sélectionner", male:"Homme", female:"Femme",
+        dateFormat:"d/m/Y", timeFormat:"H:i", flatpickrLang:"fr"
       },
-      es: { title:"Relastro - Compatibilidad de estrellas", subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad",
+      es: {
+        title:"Relastro - Compatibilidad de estrellas", subtitle:"Introduce los datos de nacimiento de dos personas para ver la compatibilidad",
         personA:"Persona A", personB:"Persona B", labelNameA:"Nombre A:", labelGenderA:"Género A:", labelCountryA:"País A:",
         labelDobA:"Fecha de nacimiento A:", labelTimeA:"Hora de nacimiento A (opcional):", labelNameB:"Nombre B:", labelGenderB:"Género B:",
         labelCountryB:"País B:", labelDobB:"Fecha de nacimiento B:", labelTimeB:"Hora de nacimiento B (opcional):",
         btnMatch:"Ver compatibilidad", resultTitle:"Resultado de compatibilidad",
-        results:["¡Vuestras personalidades son muy compatibles y con gran potencial!","Compartís una química natural y atracción fuerte.","Os entendéis fácilmente y podéis construir una relación sólida."],
-        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer", dateFormat:"d/m/Y", flatpickrLang:"es"
+        results:["Análisis preliminar: Muy compatibles.","Análisis preliminar: Requiere más esfuerzo.","Análisis preliminar: Algunos desafíos, pero también oportunidades."],
+        selectPlaceholder:"Seleccionar", male:"Hombre", female:"Mujer",
+        dateFormat:"d/m/Y", timeFormat:"H:i", flatpickrLang:"es"
       }
     };
 
@@ -277,26 +284,28 @@
       }
       document.getElementById("btnMatch").textContent = t.btnMatch;
 
-      // 更新性别下拉菜单
+      // 更新性别下拉
       const genderA = document.getElementById("genderA");
       const genderB = document.getElementById("genderB");
       genderA.innerHTML = `<option value="">${t.selectPlaceholder}</option><option value="male">${t.male}</option><option value="female">${t.female}</option>`;
       genderB.innerHTML = genderA.innerHTML;
 
-      // 日期选择器
+      // 日期+时间选择器
       flatpickr("#dobA", { dateFormat: t.dateFormat, locale: t.flatpickrLang });
       flatpickr("#dobB", { dateFormat: t.dateFormat, locale: t.flatpickrLang });
+      flatpickr("#timeA", { enableTime:true, noCalendar:true, dateFormat: t.timeFormat, time_24hr:true, locale: t.flatpickrLang });
+      flatpickr("#timeB", { enableTime:true, noCalendar:true, dateFormat: t.timeFormat, time_24hr:true, locale: t.flatpickrLang });
     }
 
-    // 语言切换
+    // 切换语言按钮
     document.querySelectorAll(".lang-switch button").forEach(btn=>{
       btn.addEventListener("click",()=>setLanguage(btn.dataset.lang));
     });
 
     // 查看匹配
     document.getElementById("btnMatch").addEventListener("click", ()=>{
-      const lang = document.querySelector(".lang-switch button[data-lang].active")?.dataset.lang || "zh";
-      const t = translations[lang];
+      const lang = document.querySelector(".lang-switch button.active")?.dataset.lang || "zh";
+      const t = translations[lang] || translations["zh"];
       const randomText = t.results[Math.floor(Math.random() * t.results.length)];
       document.getElementById("matchText").textContent = randomText;
       document.getElementById("result").style.display = "block";
