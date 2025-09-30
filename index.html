@@ -75,10 +75,6 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .lang-switch button.active {
-      text-decoration: underline;
-      color: #ffd700;
-    }
 
     .form-container {
       display: flex;
@@ -226,6 +222,9 @@
   </footer>
 
   <script>
+    // 当前语言
+    let currentLang = "zh";
+
     const translations = {
       zh: {
         title:"Relastro - 星座配对", subtitle:"输入两个人的出生信息，看看你们的缘分与性格匹配",
@@ -279,6 +278,7 @@
 
     // 设置语言
     function setLanguage(lang) {
+      currentLang = lang; // 保存当前语言
       const t = translations[lang];
       for (let key in t) {
         if (document.getElementById(key)) {
@@ -303,16 +303,13 @@
     // 切换语言按钮
     document.querySelectorAll(".lang-switch button").forEach(btn=>{
       btn.addEventListener("click",()=>{
-        document.querySelectorAll(".lang-switch button").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
         setLanguage(btn.dataset.lang);
       });
     });
 
     // 查看匹配
     document.getElementById("btnMatch").addEventListener("click", ()=>{
-      const lang = document.querySelector(".lang-switch button.active")?.dataset.lang || "zh";
-      const t = translations[lang] || translations["zh"];
+      const t = translations[currentLang] || translations["zh"];
       const randomText = t.results[Math.floor(Math.random() * t.results.length)];
       document.getElementById("matchText").textContent = randomText;
       document.getElementById("result").style.display = "block";
@@ -320,7 +317,6 @@
     });
 
     // 默认中文
-    document.querySelector('.lang-switch button[data-lang="zh"]').classList.add("active");
     setLanguage("zh");
   </script>
 </body>
